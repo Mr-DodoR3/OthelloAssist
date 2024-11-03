@@ -15,8 +15,30 @@
     <h1>オセロ支援アプリケーション</h1>
     <div id="canvas_pos"></div>
 
-    <button type="button" class="btn btn-primary" id="resetButton">リセット</button>
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#resetModal">盤面リセット</button>
+
+    <div class="modal fade" id="resetModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="resetModalLabel">盤面リセット</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            盤面を全てリセットします。<br>よろしいですか?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="resetButton">実行</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-primary" id="freeButton">選択解除</button>
     
+    <button type="button" class="btn btn-success" id="candidateButton">候補一覧</button>
+
     <div class="form-check">
       <input class="form-check-input" type="radio" name="flexRadioDefault" id="stoneRadio1">
       <label class="form-check-label" for="flexRadioDefault1">
@@ -32,7 +54,7 @@
     <div class="form-check">
       <input class="form-check-input" type="radio" name="flexRadioDefault" id="stoneRadio3" checked>
       <label class="form-check-label" for="flexRadioDefault3">
-        空白
+        空白 or 選択
       </label>
     </div>
 
