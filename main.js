@@ -12,9 +12,13 @@ var COLOR_P2;
 var COLOR_P1_ALPHA;
 var COLOR_P2_ALPHA;
 
+var delta = 100;
+
 var data = [];
 var data_eff = [];
+var data_history = [];
 var nowPlayer = 0;
+var nowCandidate = 0;
 var selectX = -1;
 var selectY = -1;
 
@@ -53,6 +57,20 @@ function resetup(GRID_SIZE, GRID_NUMBER) {
   selectReset();
 }
 
+function saveData() {
+  data_history.push(data.map(v => v.map(v2 => v2)));
+}
+
+function backData() {
+  if (data_history.length > 1) {
+    data_history.pop();
+    data = data_history[data_history.length - 1];
+  }
+  else {
+    resetup(GRID_SIZE, GRID_NUMBER);
+  }
+}
+
 function drawBoard() {
   for (let i = 0; i < GRID_NUMBER; i++) {
     for (let j = 0; j < GRID_NUMBER; j++) {
@@ -79,6 +97,14 @@ function drawBoard() {
         pop();
       };
 
+      const drawStoneAlpha = (x, y, c) => {
+        push();
+        fill(c.levels[0], c.levels[1], c.levels[2], (delta / 100) * 255);
+        noStroke();
+        ellipse(x + GRID_SIZE / 2, y + GRID_SIZE / 2, STONE_SIZE, STONE_SIZE);
+        pop();
+      };
+      
       if (data[i][j] == 1)
         drawStone(GRID_SIZE * j, GRID_SIZE * i, COLOR_P1);
       else if (data[i][j] == 2)
@@ -87,10 +113,10 @@ function drawBoard() {
       const diff_draw = (d) => {
         switch (d) {
           case 1:
-            drawStone(GRID_SIZE * j, GRID_SIZE * i, COLOR_P1_ALPHA);
+            drawStoneAlpha(GRID_SIZE * j, GRID_SIZE * i, COLOR_P1);
             break;
           case 2:
-            drawStone(GRID_SIZE * j, GRID_SIZE * i, COLOR_P2_ALPHA);
+            drawStoneAlpha(GRID_SIZE * j, GRID_SIZE * i, COLOR_P2);
             break;
           default:
             break;
@@ -101,14 +127,8 @@ function drawBoard() {
   }
 }
 
-function setCheck(x, y, c) {
-  let revese = 0;
-  if (x == GRID_NUMBER - 1) {
-
-  }
-}
-
 function selectReset() {
+  nowCandidate = 0;
   selectX = -1;
   selectY = -1;
   for (let i = 0; i < GRID_NUMBER; i++) {
@@ -133,40 +153,46 @@ function stoneSet() {
         selectY = y;
       }
     }
+    else {
+      saveData();
+    }
   }
 }
 
-// function revese(x, y, mx, my, c, check=false) {
-//   let i = 0;
-//   let fx = x;
-//   let fy = y;
-//   while (i < GRID_NUMBER) {
-//     x += mx;
-//     y += my;
-//     if (x > 0 && x <= GRID_NUMBER && y > 0 && y <= GRID_NUMBER) {
-//       if (data[y][x] == (c == 1 ? 2 : 1)) {
-//         i++;
-//       }
-//       else if (i > 0 && data[y][x] == c) {
-//         break;
-//       }
-//       else {
-//         break;
-//       }
-//     }
-//     else {
-//       break;
-//     }
-//   }
+function runSim() {
+  data[selectY][selectX] = nowCandidate;
+  for (let i = 0; i < GRID_NUMBER; i++) {
+    for (let j = 0; j < GRID_NUMBER; j++) {
+      if (data[i][j] > 0 && data_eff[i][j] > 0)
+        data[i][j] = nowCandidate;
+    }
+  }
 
-//   x = fx;
-//   y = fy;
-//   for (let j = 0; j < i; j++) {
-//     x += mx;
-//     y += my;
-//     data[y][x] = c;
-//   }
-// }
+  saveData();
+  selectReset();
+}
+
+function reveseSimAll(x, y, c) {
+  reveseSim(x, y, 1, 0, c);
+  reveseSim(x, y, -1, 0, c);
+  reveseSim(x, y, 0, 1, c);
+  reveseSim(x, y, 0, -1, c);
+  reveseSim(x, y, 1, 1, c);
+  reveseSim(x, y, -1, 1, c);
+  reveseSim(x, y, 1, -1, c);
+  reveseSim(x, y, -1, -1, c);
+}
+
+function reveseSim(x, y, mx, my, c) {
+  const n = reveseCheck(x, y, mx, my, c) - 1;
+  if (n > 0) {
+    for (let i = 0; i < n; i++) {
+      x += mx;
+      y += my;
+      data_eff[y][x] = c;
+    }
+  }
+}
 
 function reveseCheck(x, y, mx, my, c) {
   let i = 0;
@@ -176,10 +202,10 @@ function reveseCheck(x, y, mx, my, c) {
     i++;
     if (x >= 0 && x < GRID_NUMBER && y >= 0 && y < GRID_NUMBER) {
       if (i == 1 && data[y][x] == (c == 1 ? 2 : 1)) {
-        continue
+        continue;
       }
       else if (i > 1 && data[y][x] == c) {
-        return true;
+        return i;
       }
       else if (i > 1 && data[y][x] == (c == 1 ? 2 : 1)) {
         continue;
@@ -193,11 +219,12 @@ function reveseCheck(x, y, mx, my, c) {
     }
   }
 
-  return false;
+  return 0;
 }
 
 function candidate() {
   selectReset();
+  nowCandidate = nowPlayer;
 
   for (let i = 0; i < GRID_NUMBER; i++) {
     for (let j = 0; j < GRID_NUMBER; j++) {
@@ -214,7 +241,6 @@ function candidate() {
       }
     }
   }
-  console.log(data_eff);
 }
 
 function draw() {
@@ -223,6 +249,10 @@ function draw() {
   //   stoneSet();
   // }
   drawBoard();
+
+  delta -= 2;
+  if (delta < 0)
+    delta = 100;
 }
 
 function mousePressed() {
