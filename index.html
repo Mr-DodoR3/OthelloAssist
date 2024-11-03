@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>オセロ支援アプリケーション</title>
+    <link rel="stylesheet" href ="index.css">
+    <link rel="icon" href="Image/Dodo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.1/lib/p5.min.js"></script>
+    <script src="index.js"></script>
+    <script src="main.js"></script>
+  </head>
+  <body>
+    <h1>オセロ支援アプリケーション</h1>
+    <div id="canvas_pos"></div>
+
+    <button type="button" class="btn btn-primary" id="resetButton">リセット</button>
+    
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="flexRadioDefault" id="stoneRadio1">
+      <label class="form-check-label" for="flexRadioDefault1">
+        白石
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="flexRadioDefault" id="stoneRadio2" checked>
+      <label class="form-check-label" for="flexRadioDefault2">
+        黒石
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="flexRadioDefault" id="stoneRadio3" checked>
+      <label class="form-check-label" for="flexRadioDefault3">
+        空白
+      </label>
+    </div>
+
+  </body>
+</html>
